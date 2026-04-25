@@ -12,32 +12,38 @@ export default function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  async function handleRegister(e) {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-          phone,
-          role
-        }
+async function handleRegister(e) {
+  e.preventDefault()
+  setError('')
+  setLoading(true)
+
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name: fullName,
+        phone,
+        role
       }
-    })
-
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-      return
     }
+  })
 
-    navigate('/login')
+  if (error) {
+    setError(error.message)
     setLoading(false)
+    return
   }
+
+  const userRole = data.user?.user_metadata?.role
+  if (userRole === 'customer') navigate('/customer')
+  else if (userRole === 'provider') navigate('/provider')
+  else if (userRole === 'admin') navigate('/admin')
+  else navigate('/login')
+
+  setLoading(false)
+}
 
   return (
     <div style={styles.page}>
@@ -88,6 +94,7 @@ export default function Register() {
           >
             <option value="customer">I need a service (Customer)</option>
             <option value="provider">I provide services (Service Provider)</option>
+              <option value="admin">Admin</option>
           </select>
 
           <button style={styles.button} type="submit" disabled={loading}>

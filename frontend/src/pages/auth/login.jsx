@@ -10,26 +10,31 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
 
   async function handleLogin(e) {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
+  e.preventDefault()
+  setError('')
+  setLoading(true)
 
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password })
 
-    if (error) {
-      setError(error.message)
-      setLoading(false)
-      return
-    }
-
-    const role = data.user.user_metadata?.role
-    if (role === 'customer') navigate('/customer')
-    else if (role === 'provider') navigate('/provider')
-    else if (role === 'admin') navigate('/admin')
-    else navigate('/login')
-
+  if (error) {
+    setError(error.message)
     setLoading(false)
+    return
   }
+
+  console.log('user data:', data.user)
+  console.log('metadata:', data.user.user_metadata)
+
+  const role = data.user.user_metadata?.role
+  console.log('role:', role)
+
+  if (role === 'customer') navigate('/customer')
+  else if (role === 'provider') navigate('/provider')
+  else if (role === 'admin') navigate('/admin')
+  else navigate('/login')
+
+  setLoading(false)
+}
 
   return (
     <div style={styles.page}>

@@ -6,6 +6,7 @@ import Register from './pages/auth/Register'
 import CustomerHome from './pages/customer/Home'
 import ProviderDashboard from './pages/provider/Dashboard'
 import AdminDashboard from './pages/admin/Dashboard'
+import JobStatus from './pages/customer/JobStatus'
 
 function ProtectedRoute({ children, role }) {
   const { user } = useAuth()
@@ -24,6 +25,7 @@ export default function AppRoutes() {
         <Route path="/provider" element={<ProtectedRoute role="provider"><ProviderDashboard /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute role="admin"><AdminDashboard /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="/customer/jobs" element={<ProtectedRoute role="customer"><JobStatus /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   )
